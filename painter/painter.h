@@ -33,16 +33,8 @@ int paint_stack(char** list, int count);
 int paint_stack_reverse(char** list, int count);
 
 /*
- * 特殊内容 lru
+ * 特殊内容 string
  */
-int paint_lru(int* list, int* use, int count);
-
-/*
-type: 1 list
-type: 2 fifo
-type: 3 stack
-type: 4 lru
-*/
-void paint(int* list, int count, int type,  int index);
+int paint_string(int* list, int* use, int count);
 
 #endif

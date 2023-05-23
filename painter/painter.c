@@ -48,6 +48,7 @@ int int_format(char*** char_list, int* in_list, int count) {
 }
 
 int float_format() {
+    // TODO
     return 0;
 }
 
@@ -56,10 +57,15 @@ int paint_list(char** list, int count, int index) {
     for(int i = 0; i < count; i++) {
         item_length[i] = strlen(list[i]) + 4;
     }
-    draw_ud_list(item_length, count);
-    draw_list_list(list, count, index);
-    draw_ud_list(item_length, count);
     return 0;
+}
+
+int paint_list_with_head() {
+
+}
+
+int paint_list_double_line() {
+
 }
 
 int paint_fifo(char** list, int count) {
@@ -67,10 +73,11 @@ int paint_fifo(char** list, int count) {
     for(int i = 0; i < count; i++) {
         item_length[i] = strlen(list[i]) + 4;
     }
-    draw_ud_fifo(item_length, count);
-    draw_list_fifo(list, count);
-    draw_ud_fifo(item_length, count);
     return 0;
+}
+
+int paint_fifo_reverse() {
+
 }
 
 int paint_stack(char** list, int count) {
@@ -78,13 +85,14 @@ int paint_stack(char** list, int count) {
     for(int i = 0; i < count; i++) {
         item_length[i] = strlen(list[i]) + 4;
     }
-    draw_ud_stack(item_length, count);
-    draw_list_stack(list, count);
-    draw_ud_stack(item_length, count);
     return 0;
 }
 
-int paint_lru(int* list, int* use, int count) {
+int paint_stack_reverse() {
+
+}
+
+int paint_string(int* list, string, int count) {
     char** list_main;
     char** list_use;
     int_format(&list_main, list, count);
@@ -97,30 +105,5 @@ int paint_lru(int* list, int* use, int count) {
     for(int i = 0; i < count; i++) {
         item_length_use[i] = strlen(list_use[i]) + 4;
     }
-    draw_ud_lru(item_length_main, count);
-    draw_list_lru_mem(list_main, count);
-    draw_ud_lru(item_length_main, count);
-    draw_ud_lru(item_length_use, count);
-    draw_list_lru_use(list_use, count);
-    draw_ud_lru(item_length_use, count);
     return 0;
-}
-
-void paint(int* list, int count, int type, int index) {
-    char** char_list;
-    int_format(&char_list, list, count);
-    switch(type) {
-        case(1):
-            paint_list(char_list, count, index);
-            break;
-        case(2):
-            paint_fifo(char_list, count);
-            break;
-        case(3):
-            paint_stack(char_list, count);
-            break;
-        default:
-            printf("wrong para get!\n");
-            break;
-    }
 }
