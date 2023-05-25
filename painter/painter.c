@@ -44,8 +44,18 @@ int int_format(char*** char_list, int* in_list, int count) {
     return 0;
 }
 
-int float_format(char* format, float* fo_list, int count) {
+int float_format(char*** list, char* format, float* fo_list, int count) {
     // TODO
+    char** tlist = (char**)malloc(count * sizeof(char*));
+    for(int i = 0; i < count; i++) {
+        char cflo[10];
+        sprintf(cflo, format, fo_list[i]);
+        int length = strlen(cflo);
+        char* item = (char*)malloc(length * sizeof(char));
+        strncpy(item, cflo, length);
+        tlist[i] = item;
+    }
+    *list = tlist;
     return 0;
 }
 

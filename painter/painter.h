@@ -11,7 +11,7 @@ int int_format(char*** char_list, int* in_list, int count);
 /*
  * 实现将浮点型数组转换成为字符型数组
  */
-int float_format();
+int float_format(char*** list, char* format, float* fo_list, int count);
 
 /*
  * list 相关
