@@ -35,6 +35,6 @@ int paint_stack_reverse(char** list, int count);
 /*
  * 特殊内容 string
  */
-int paint_string(int* list, int* use, int count);
+int paint_string(int* list, char* start, int count);
 
 #endif

@@ -5,7 +5,7 @@ LIB=./lib
 BUILD=./build
 TESTS=./tests
 
-all: $(LIB)/libpainter.so
+all: $(LIB)/libpainter.so $(BIN)/test_format
 
 # lib
 
@@ -17,4 +17,14 @@ $(LIB)/libpainter.so: $(BUILD)/painter.o
 
 # test
 
+$(BUILD)/%.o: $(TESTS)/%.c
+	$(CC) $< -c -I ./painter $(CFLAGS) -o $@
 
+$(BIN)/%: $(BUILD)/%.o 
+	$(CC) $< -L $(LIB) -lpainter -o $@
+
+.PHONY:clean
+clean:
+	rm ./build/*
+	rm ./bin/*
+	rm ./lib/*
