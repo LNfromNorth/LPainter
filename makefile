@@ -14,7 +14,7 @@ all: $(LIB)/libpainter.so $(TEST_FILE)
 # lib
 
 $(BUILD)/painter.o: $(PAINTER)/painter.c
-	$(CC) $< -c $(CFLAGS) -o $@
+	$(CC) -I ./painter $< -c $(CFLAGS) -o $@
 
 $(LIB)/libpainter.so: $(BUILD)/painter.o
 	$(CC) $< $(CFLAGS) -fPIC -shared -o $@ 
