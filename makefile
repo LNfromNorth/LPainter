@@ -5,7 +5,11 @@ LIB=./lib
 BUILD=./build
 TESTS=./tests
 
-all: $(LIB)/libpainter.so $(BIN)/test_format
+SOURCES=$(wildcard $(TESTS)/test_*.c)
+TEST_FILE=$(patsubst $(TESTS)/%.c,$(BIN)/%,$(SOURCES))
+
+all: $(LIB)/libpainter.so $(TEST_FILE)
+	@echo $(TEST_FILE)
 
 # lib
 
