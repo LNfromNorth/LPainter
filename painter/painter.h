@@ -18,6 +18,7 @@ typedef enum {
 typedef struct {
     char** list_main;   // 打印列表
     char** list_aux;    // 附属表
+    int aux_set;
     int* max_table;     // 最大长度表单
     char* head;         // 头部信息
     type_t type;        // 打印类型
@@ -32,7 +33,7 @@ void set_screen(int value);
 /*
  * 初始化结构体
  */
-painter_t* init_painter(type_t type, int length);
+painter_t* init_painter(type_t type, int length, char* head);
 
 /*
  * 重新设置类型

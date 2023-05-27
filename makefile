@@ -1,4 +1,4 @@
-CFLAGS=-g -Wall
+CFLAGS=-g -Wall -DNDEBUG
 PAINTER=./painter
 BIN=./bin
 LIB=./lib
