@@ -20,6 +20,8 @@ $(LIB)/libpainter.so: $(BUILD)/painter.o
 	$(CC) $< $(CFLAGS) -fPIC -shared -o $@ 
 
 # test
+test:
+	sh ./runtest.sh
 
 $(BUILD)/%.o: $(TESTS)/%.c
 	$(CC) $< -c -I ./painter $(CFLAGS) -o $@

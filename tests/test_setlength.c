@@ -9,12 +9,14 @@ int main(int argc, char** argv) {
     reset_list(painter, list, 0);
     printf("length is %d\n", painter->length);
     for(int i = 0; i < painter->index; i++) {
+        printf("%d:", painter->max_table[i]);
         printf("%s ", painter->list_main[i]);
     }
     printf("\n");
     reset_length(painter, 10);
     printf("length is %d\n", painter->length);
     for(int i = 0; i < painter->index; i++) {
+        printf("%d:", painter->max_table[i]);
         printf("%s ", painter->list_main[i]);
     }
     printf("\n");
@@ -23,6 +25,7 @@ int main(int argc, char** argv) {
     reset_list(painter2, list, 1);
     printf("length is %d\n", painter2->length);
     for(int i = 0; i < painter2->index; i++) {
+        printf("%d:", painter2->max_table[i]);
         printf("%s-", painter2->list_main[i]);
         printf("%s ", painter2->list_aux[i]);
     }
@@ -31,6 +34,7 @@ int main(int argc, char** argv) {
     reset_length(painter, 11);
     printf("length is %d\n", painter2->length);
     for(int i = 0; i < painter2->index; i++) {
+        printf("%d:", painter2->max_table[i]);
         printf("%s-", painter2->list_main[i]);
         printf("%s ", painter2->list_aux[i]);
     }

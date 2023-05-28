@@ -119,17 +119,20 @@ void destroy_painter(painter_t* painter) {
         free(painter->list_main[i]);
         free(painter->list_aux[i]);
     }
+
     free(painter->list_main);
     free(painter->list_aux);
+
     free(painter->max_table);
     free(painter->head);
+
     free(painter);
 }
 
 int reset_type(painter_t* painter, type_t type, char* head) {
     if(painter == NULL)
         return 0;
-    painter->type = type;
+
     switch(type) {
         case FIFO: 
         case FIFO_RE:
@@ -149,24 +152,33 @@ int reset_type(painter_t* painter, type_t type, char* head) {
             painter->head = NULL;
             break;
     }
+
+    painter->type = type;
+
     return 1;
 }
 
 int reset_length(painter_t* painter, int length) {
     if(painter == NULL)
         return 0;
+
     char** temp = painter->list_main;
+    char** atemp = painter->list_aux;
+    int* ttemp = painter->max_table;
+
     painter->list_main = (char**)malloc(sizeof(char*) * (length + 1));
-    for(int i = 0; i < painter->length; ++i) {
-        painter->list_main[i] = temp[i];
-    }
-    if(painter->type == LIST_DOUBLE) {
-        char** atemp = painter->list_aux;
+    painter->max_table = (int*)malloc(sizeof(int) * (length + 1));
+    if(painter->type == LIST_DOUBLE)
         painter->list_aux = (char**)malloc(sizeof(char*) * (length + 1));
-        for(int i = 0; i < painter->length; ++i) {
+
+    for(int i = 0; i < painter->length; ++i) {
+        painter->max_table[i] = ttemp[i];
+        painter->list_main[i] = temp[i];
+        if(painter->type == LIST_DOUBLE) {
             painter->list_aux[i] = atemp[i];
         }
     }
+
     painter->length = length + 1;
     return 1;
 }
@@ -174,6 +186,7 @@ int reset_length(painter_t* painter, int length) {
 int reset_list(painter_t* painter, char** list, int sec) {
     if(painter == NULL)
         return 0;
+
     if(sec == 1) {
         painter->aux_set = 1;
         if(painter->type != LIST_DOUBLE) {
@@ -181,20 +194,14 @@ int reset_list(painter_t* painter, char** list, int sec) {
             return 0;
         }
     }
-    if(sec != 1) {
-        for(int j = 0, i = 1; i < painter->length; ++j, ++i) {
-            char* item = (char*)malloc(sizeof(char) * strlen(list[j]));
-            strncpy(item, list[j], strlen(list[j]));
-            painter->list_main[i] = item;
-        }
-    } else {
-        for(int j = 0, i = 1; i < painter->length; ++j, ++i) {
-            char* item = (char*)malloc(sizeof(char) * strlen(list[j]));
-            strncpy(item, list[j], strlen(list[j]));
-            painter->list_aux[i] = item;
-        }
+
+    for(int j = 0, i = 1; i < painter->length; ++j, ++i) {
+        char* item = (char*)malloc(sizeof(char) * strlen(list[j]));
+        strncpy(item, list[j], strlen(list[j]));
+        if(sec == 1) painter->list_aux[i] = item;
+        else painter->list_main[i] = item;
     }
-    painter->index = painter->length - 1;
+    painter->index = painter->length;
     get_table(painter, -1);
     return 1;
 }
