@@ -38,7 +38,7 @@ painter_t* init_painter(type_t type, int length, char* head);
 /*
  * 重新设置类型
  */
-int reset_type(painter_t* painter, type_t type);
+int reset_type(painter_t* painter, type_t type, char* head);
 int reset_length(painter_t* painter, int length);
 int reset_list(painter_t* painter, char** list, int sec);
 int add_item(void* );

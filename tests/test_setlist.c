@@ -18,6 +18,7 @@ int main(int argc, char** argv) {
         printf("%d:", plist->max_table[i]);
         printf("%s ", plist->list_main[i]);
     }
+    printf("\n");
     for(int i = 0; i < pdlist->length; i++) {
         printf("%d:", pdlist->max_table[i]);
         printf("%s ", pdlist->list_aux[i]);

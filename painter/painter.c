@@ -72,6 +72,7 @@ int float_format(char*** list, char* format, float* fo_list, int count) {
     *list = tlist;
     return 0;
 }
+
 void get_table(painter_t* painter, int index) {
     int main;
     int aux = 0;
@@ -80,7 +81,8 @@ void get_table(painter_t* painter, int index) {
         aux = strlen(painter->list_aux[index]);
         painter->max_table[index] = main > aux ? main + 4: aux + 4;
     } else {
-        for(int i = 0; i < painter->length; i++) {
+        int i = (painter->type > 1) ? 0 : 1;
+        for(; i < painter->length; i++) {
             main = strlen(painter->list_main[i]);
             if(painter->type == LIST_DOUBLE && painter->aux_set == 1)
                 aux = strlen(painter->list_aux[i]);
@@ -96,34 +98,19 @@ painter_t* init_painter(type_t type, int length, char* head) {
 
     painter_t* painter = (painter_t*)malloc(sizeof(painter_t));
 
-    int clength = type > 1 ? length + 1 : length;
-    painter->index = type > 1 ? 1 : 0;
     // double list init the aux list
     if(type == LIST_DOUBLE)
-        painter->list_aux = (char**)malloc(sizeof(char*) * clength);
+        painter->list_aux = (char**)malloc(sizeof(char*) * (length + 1));
     else painter->list_aux = NULL;
+    painter->list_main = (char**)malloc(sizeof(char*) * (length + 1));
+    painter->max_table = (int*)malloc(sizeof(int) * (length + 1));
 
-    painter->list_main = (char**)malloc(sizeof(char*) * clength);
-    painter->max_table = (int*)malloc(sizeof(int) * clength);
     painter->aux_set = 0;
-    painter->type = type;
-    painter->length = clength;
-    switch(type) {
-        case FIFO: 
-        case FIFO_RE:
-            painter->list_main[0] = "head>"; 
-            painter->head = "head>";
-            break;
-        case STACK:
-        case STACK_RE:
-            painter->list_main[0] = "top>"; 
-            painter->head = "top>";
-            break;
-        case HEAD:
-            painter->list_main[0] = head; 
-            painter->head = head; break; default:
-            break;
-    }
+    painter->length = length + 1;
+    painter->index = 1;
+
+    reset_type(painter, type, head);
+
     return painter;
 }
 
@@ -139,17 +126,48 @@ void destroy_painter(painter_t* painter) {
     free(painter);
 }
 
-int reset_type(painter_t* painter, type_t type) {
+int reset_type(painter_t* painter, type_t type, char* head) {
     if(painter == NULL)
         return 0;
     painter->type = type;
+    switch(type) {
+        case FIFO: 
+        case FIFO_RE:
+            painter->list_main[0] = "head>"; 
+            painter->head = "head>";
+            break;
+        case STACK:
+        case STACK_RE:
+            painter->list_main[0] = "top>"; 
+            painter->head = "top>";
+            break;
+        case HEAD:
+            painter->list_main[0] = head; 
+            painter->head = head; break; 
+        default:
+            painter->list_main[0] = NULL;
+            painter->head = NULL;
+            break;
+    }
     return 1;
 }
 
 int reset_length(painter_t* painter, int length) {
     if(painter == NULL)
         return 0;
-    painter->length = length;
+    char** temp = painter->list_main;
+    painter->list_main = (char**)malloc(sizeof(char*) * (length + 1));
+    for(int i = 0; i < painter->length; ++i) {
+        painter->list_main[i] = temp[i];
+    }
+    if(painter->type == LIST_DOUBLE) {
+        char** atemp = painter->list_aux;
+        painter->list_aux = (char**)malloc(sizeof(char*) * (length + 1));
+        for(int i = 0; i < painter->length; ++i) {
+            painter->list_aux[i] = atemp[i];
+        }
+    }
+    painter->length = length + 1;
     return 1;
 }
 
@@ -164,20 +182,16 @@ int reset_list(painter_t* painter, char** list, int sec) {
         }
     }
     if(sec != 1) {
-        int i = (painter->type > 1) ? 1 : 0;
-        for(int j = 0; i < painter->length; ++j) {
+        for(int j = 0, i = 1; i < painter->length; ++j, ++i) {
             char* item = (char*)malloc(sizeof(char) * strlen(list[j]));
             strncpy(item, list[j], strlen(list[j]));
             painter->list_main[i] = item;
-            ++i;
         }
     } else {
-        int i = (painter->type > 1) ? 1 : 0;
-        for(int j = 0; i < painter->length; ++j) {
+        for(int j = 0, i = 1; i < painter->length; ++j, ++i) {
             char* item = (char*)malloc(sizeof(char) * strlen(list[j]));
             strncpy(item, list[j], strlen(list[j]));
             painter->list_aux[i] = item;
-            ++i;
         }
     }
     painter->index = painter->length - 1;
