@@ -6,13 +6,6 @@
 #include <stdlib.h>
 #include <assert.h>
 
-#define draw_ud(list, count) \
-    for(int i = 0; i < count; i++) { \
-        printf("+"); \
-        for(int j = 0; j < list[i]; j++) { \ printf("-"); \
-        } \
-    } \ printf("+");
-
 
 static int max_screen_length = 80;
 
@@ -95,6 +88,8 @@ painter_t* init_painter(type_t type, int length, char* head) {
     // assert the value
     assert(type >= 0 && type <= 6);
     assert(length > 0);
+    if(type == HEAD) 
+        assert(head != NULL);
 
     painter_t* painter = (painter_t*)malloc(sizeof(painter_t));
 
@@ -130,15 +125,16 @@ void destroy_painter(painter_t* painter) {
 }
 
 int reset_type(painter_t* painter, type_t type, char* head) {
-    if(painter == NULL)
-        return 0;
+    if(painter == NULL) return 0;
+
+    if(type == HEAD)
+        assert(head != NULL);
 
     switch(type) {
         case FIFO: 
         case FIFO_RE:
             painter->list_main[0] = "head>"; 
-            painter->head = "head>";
-            break;
+            painter->head = "head>"; break;
         case STACK:
         case STACK_RE:
             painter->list_main[0] = "top>"; 
@@ -159,8 +155,9 @@ int reset_type(painter_t* painter, type_t type, char* head) {
 }
 
 int reset_length(painter_t* painter, int length) {
-    if(painter == NULL)
-        return 0;
+    if(painter == NULL) return 0;
+
+    assert(length > 0);
 
     char** temp = painter->list_main;
     char** atemp = painter->list_aux;
@@ -171,7 +168,9 @@ int reset_length(painter_t* painter, int length) {
     if(painter->type == LIST_DOUBLE)
         painter->list_aux = (char**)malloc(sizeof(char*) * (length + 1));
 
-    for(int i = 0; i < painter->length; ++i) {
+    int end = painter->length > length ? length + 1 : painter->length;
+
+    for(int i = 0; i < end; ++i) {
         painter->max_table[i] = ttemp[i];
         painter->list_main[i] = temp[i];
         if(painter->type == LIST_DOUBLE) {
@@ -179,13 +178,14 @@ int reset_length(painter_t* painter, int length) {
         }
     }
 
+    if(painter->length < length) painter->index = length + 1;
+
     painter->length = length + 1;
     return 1;
 }
 
 int reset_list(painter_t* painter, char** list, int sec) {
-    if(painter == NULL)
-        return 0;
+    if(painter == NULL) return 0;
 
     if(sec == 1) {
         painter->aux_set = 1;
@@ -206,7 +206,18 @@ int reset_list(painter_t* painter, char** list, int sec) {
     return 1;
 }
 
-// int add_item(void)
+void draw_ud(int* max, int start, int end) {
+    for(int i = start; i < end; ++i) {
+        printf("+");
+        for(int j = 0; j < max[i]; ++j)
+            printf("-");
+    }
+    printf("+\n");
+}
+
+void draw_text(char** list, int* max, int start, int end) {
+
+}
 
 /*
  * paint
@@ -214,20 +225,21 @@ int reset_list(painter_t* painter, char** list, int sec) {
 void paint(painter_t* painter) {
     if(painter == NULL) return;
 
-    switch(painter->type) {
-        case LIST: break;
-        case LIST_DOUBLE: break;
-        case FIFO: break;
-        case FIFO_RE: break;
-        case STACK: break;
-        case STACK_RE: break;
-        case HEAD: 
-            if(painter->head == NULL) {
-                debug("use the type head, but not set the haed");
-                return;
-            }
-            break;
+    int start = 0;
+    while(start < painter->index) {
+        int end = start;
+        int sum = 0;
+        for(end = start; end < painter->index; ++end) {
+            sum += painter->max_table[end];
+            if(sum > max_screen_length) break;
+        }
+        draw_ud(painter->max_table, start, end);
+        draw_text(painter->list_main, painter->max_table, start, end);
+        draw_ud(painter->max_table, start, end);
+        if(painter->type == LIST_DOUBLE) {
+            draw_text(painter->list_aux, painter->max_table, start, end);
+            draw_ud(painter->max_table, start, end);
+        }
+        start = end;
     }
 }
-
-
