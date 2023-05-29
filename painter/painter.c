@@ -216,7 +216,17 @@ void draw_ud(int* max, int start, int end) {
 }
 
 void draw_text(char** list, int* max, int start, int end) {
-
+    for(int i = start; i < end; ++i) {
+        // alien to the rigth
+        int space = max[i] - strlen(list[i]);
+        printf("|");
+        for(int j = 0; j < space / 2; ++j)
+            printf(" ");
+        printf("%s", list[i]);
+        for(int j = 0; j < (space - space / 2); ++j)
+            printf(" ");
+    }
+    printf("|\n");
 }
 
 /*
@@ -225,7 +235,7 @@ void draw_text(char** list, int* max, int start, int end) {
 void paint(painter_t* painter) {
     if(painter == NULL) return;
 
-    int start = 0;
+    int start = (painter->type < 2) ? 1 : 0;
     while(start < painter->index) {
         int end = start;
         int sum = 0;
