@@ -8,11 +8,19 @@ typedef enum {
     LIST = 0,
     LIST_DOUBLE = 1,
     FIFO = 2,
-    FIFO_RE = 3,
-    STACK = 4,
-    STACK_RE = 5,
-    HEAD = 6,
+    STACK = 3,
+    HEAD = 4,
 } type_t;
+
+// 返回值类型
+typedef enum {
+    SUCCESS = 0,
+    NULL_PAINT = 1,
+    NULL_LIST = 2,
+    NULL_HEAD = 3,
+    INV_LENGTH = 4,
+
+} rt_t;
 
 // 打印结构
 typedef struct {
@@ -53,34 +61,4 @@ void paint(painter_t* painter);
  */
 void destroy_painter(painter_t* painter);
 
-
-// /*
-//  * Format:实现将整形数组转换成为字符型数组
-//  */
-// int int_format(char*** char_list, int* in_list, int count);
-// int float_format(char*** list, char* format, float* fo_list, int count);
-//
-// /*
-//  * list 相关
-//  */
-// int paint_list(char** list, int count, int index);
-// int paint_list_dobule_line(char** list, int count, int index);
-//
-// /*
-//  * fifo 相关
-//  */
-// int paint_fifo(char** list, int count);
-// int paint_fifo_reverse(char** list, int count);
-//
-// /*
-//  * stack 相关
-//  */
-// int paint_stack(char** list, int count);
-// int paint_stack_reverse(char** list, int count);
-//
-// /*
-//  * 特殊内容 string
-//  */
-// int paint_string(int* list, char* start, int count);
-//
 #endif

@@ -10,12 +10,11 @@
 static int max_screen_length = 80;
 
 void set_screen(int value) {
-    debug("reset the max screen length of window");
-    max_screen_length = value > 0 ? value : max_screen_length;
+    assert(value > 0);
+    max_screen_length = value; 
 }
 
 int get_screen() {
-    debug("get the max screen length of window");
     return max_screen_length;
 }
 
@@ -52,7 +51,6 @@ int int_format(char*** char_list, int* in_list, int count) {
 }
 
 int float_format(char*** list, char* format, float* fo_list, int count) {
-    // TODO
     char** tlist = (char**)malloc(count * sizeof(char*));
     for(int i = 0; i < count; i++) {
         char cflo[10];
@@ -86,24 +84,28 @@ void get_table(painter_t* painter, int index) {
 
 painter_t* init_painter(type_t type, int length, char* head) {
     // assert the value
-    assert(type >= 0 && type <= 6);
-    assert(length > 0);
-    if(type == HEAD) 
-        assert(head != NULL);
+    if(type < 0 || type > 4) return NULL;
+    if(length < 0) return NULL;
+    if(type == HEAD && head == NULL) 
+        return NULL;
 
     painter_t* painter = (painter_t*)malloc(sizeof(painter_t));
+    if(painter == NULL) return NULL;
 
     // double list init the aux list
     if(type == LIST_DOUBLE)
         painter->list_aux = (char**)malloc(sizeof(char*) * (length + 1));
     else painter->list_aux = NULL;
+
+    painter->aux_set = 0;
+
     painter->list_main = (char**)malloc(sizeof(char*) * (length + 1));
     painter->max_table = (int*)malloc(sizeof(int) * (length + 1));
 
-    painter->aux_set = 0;
     painter->length = length + 1;
     painter->index = 1;
 
+    // set the type
     reset_type(painter, type, head);
 
     return painter;
@@ -125,18 +127,16 @@ void destroy_painter(painter_t* painter) {
 }
 
 int reset_type(painter_t* painter, type_t type, char* head) {
-    if(painter == NULL) return 0;
+    if(painter == NULL) return NULL_PAINT;
 
-    if(type == HEAD)
-        assert(head != NULL);
+    if(type == HEAD && head == NULL)
+        return NULL_HEAD;
 
     switch(type) {
         case FIFO: 
-        case FIFO_RE:
             painter->list_main[0] = "head>"; 
             painter->head = "head>"; break;
         case STACK:
-        case STACK_RE:
             painter->list_main[0] = "top>"; 
             painter->head = "top>";
             break;
@@ -151,13 +151,13 @@ int reset_type(painter_t* painter, type_t type, char* head) {
 
     painter->type = type;
 
-    return 1;
+    return SUCCESS;
 }
 
 int reset_length(painter_t* painter, int length) {
-    if(painter == NULL) return 0;
+    if(painter == NULL) return NULL_PAINT;
 
-    assert(length > 0);
+    if(length < 0) return INV_LENGTH;
 
     char** temp = painter->list_main;
     char** atemp = painter->list_aux;
@@ -168,6 +168,7 @@ int reset_length(painter_t* painter, int length) {
     if(painter->type == LIST_DOUBLE)
         painter->list_aux = (char**)malloc(sizeof(char*) * (length + 1));
 
+    // get the max index
     int end = painter->length > length ? length + 1 : painter->length;
 
     for(int i = 0; i < end; ++i) {
@@ -181,11 +182,14 @@ int reset_length(painter_t* painter, int length) {
     if(painter->length < length) painter->index = length + 1;
 
     painter->length = length + 1;
-    return 1;
+
+    return SUCCESS;
 }
 
 int reset_list(painter_t* painter, char** list, int sec) {
-    if(painter == NULL) return 0;
+    if(painter == NULL) return NULL_PAINT;
+
+    if(list == NULL) return NULL_LIST;
 
     if(sec == 1) {
         painter->aux_set = 1;
@@ -203,7 +207,7 @@ int reset_list(painter_t* painter, char** list, int sec) {
     }
     painter->index = painter->length;
     get_table(painter, -1);
-    return 1;
+    return SUCCESS;
 }
 
 void draw_ud(int* max, int start, int end) {

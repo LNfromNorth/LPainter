@@ -4,12 +4,17 @@ BIN=./bin
 LIB=./lib
 BUILD=./build
 TESTS=./tests
+EXP=./example
 
-SOURCES=$(wildcard $(TESTS)/test_*.c)
-TEST_FILE=$(patsubst $(TESTS)/%.c,$(BIN)/%,$(SOURCES))
+T_SOURCES=$(wildcard $(TESTS)/test_*.c)
+TEST_FILE=$(patsubst $(TESTS)/%.c,$(BIN)/%,$(T_SOURCES))
 
-all: $(LIB)/libpainter.so $(TEST_FILE)
+E_SOURCES=$(wildcard $(EXP)/*.c)
+EXP_FILE=$(patsubst $(EXP)/%.c,$(BIN)/%,$(E_SOURCES))
+
+all: $(LIB)/libpainter.so $(TEST_FILE) $(EXP_FILE)
 	@echo $(TEST_FILE)
+	@echo $(EXP_FILE)
 
 # lib
 
@@ -27,6 +32,13 @@ $(BUILD)/%.o: $(TESTS)/%.c
 	$(CC) $< -c -I ./painter $(CFLAGS) -o $@
 
 $(BIN)/%: $(BUILD)/%.o 
+	$(CC) $< -L $(LIB) -lpainter -o $@
+
+# example
+$(BUILD)/%.o: $(EXP)/%.c
+	$(CC) $< -c -I ./painter $(CFLAGS) -o $@
+
+$(BIN)/%: $(BUILD)/%.o
 	$(CC) $< -L $(LIB) -lpainter -o $@
 
 .PHONY:clean
